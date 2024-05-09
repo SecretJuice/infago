@@ -1,10 +1,12 @@
-CREATE TABLE IF NOT EXISTS students
-(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50),
-    fav_color VARCHAR(20),
-    age INT
+CREATE TABLE IF NOT EXISTS classes (
+    class_id INT AUTO_INCREMENT PRIMARY KEY,
+    class_name VARCHAR(50) NOT NULL,
+    student_id INT NOT NULL
 );
 
-INSERT INTO students(name, fav_color, age) VALUES ('Blake McGhie', 'pthalo green', 22);
-INSERT INTO students(name, fav_color, age) VALUES ('Connor Robb', 'idk blue ig', 23);
+INSERT INTO classes (class_name, student_id) VALUES
+('Math', 1),
+('Science', 2),
+('History', 1),
+('English', 2),
+('Physics', 1);

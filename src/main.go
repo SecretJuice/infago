@@ -1,21 +1,36 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	infago "infago/src/infago"
-
+	"os"
+	"strconv"
 )
+
+type StudentClass struct {
+	StudentId int
+	Name      string
+	ClassName string
+	ClassId   int
+}
+
+type ClassByStudent struct {
+	ClassId   int
+	ClassName string
+	StudentId int
+}
+
+type Student struct {
+	Id       int
+	Name     string
+	FavColor string
+	Age      string
+}
 
 func main() {
 	students := infago.GetPostgresData()
 	classes := infago.GetMySQLData()
-
-	type Student struct {
-		Id int
-		Name string
-		FavColor string
-		Age string
-	}
 
 	var studentArray []Student
 	var student Student
@@ -24,24 +39,11 @@ func main() {
 		studentArray = append(studentArray, student)
 	}
 
-	type ClassByStudent struct {
-		ClassId int
-		ClassName string
-		StudentId int
-	}
-
 	var classArray []ClassByStudent
 	var classByStudent ClassByStudent
 	for classes.Next() {
 		classes.Scan(&classByStudent.ClassId, &classByStudent.ClassName, &classByStudent.StudentId)
 		classArray = append(classArray, classByStudent)
-	}
-
-	type StudentClass struct {
-		StudentId int
-		Name string
-		ClassName string
-		ClassId int
 	}
 
 	var StudentClasses []StudentClass
@@ -62,5 +64,33 @@ func main() {
 	for _, value := range StudentClasses {
 		fmt.Printf("Class Entry: %d, %s, %d, %s\n", value.ClassId, value.ClassName, value.StudentId, value.Name)
 	}
+
+	writeToCSV(StudentClasses)
+
+}
+
+func writeToCSV(studentClasses []StudentClass) {
+	file, err := os.Create("./result.csv")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+
+	defer writer.Flush()
+
+	var rows [][]string
+
+	for _, element := range studentClasses {
+
+		row := []string{strconv.Itoa(element.StudentId), element.Name, element.ClassName, strconv.Itoa(element.ClassId)}
+		rows = append(rows, row)
+	}
+
+	header := []string{"StudentId", "Name", "ClassName", "ClassId"}
+
+	writer.Write(header)
+	writer.WriteAll(rows)
 
 }

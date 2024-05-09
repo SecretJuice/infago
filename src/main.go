@@ -1,12 +1,15 @@
 package main
 
 import (
+  cr821/db-connection
 	"fmt"
 	infago "infago/src/infago"
+
 )
 
 func main() {
 
+  cr821/db-connection
 	query := `
 	SELECT id from classes;
 	`

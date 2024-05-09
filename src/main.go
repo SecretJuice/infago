@@ -7,20 +7,22 @@ import (
 
 func main() {
 
+	query := `
+	SELECT id from classes;
+	`
+
 	mysql := infago.ConnectMySQL()
-	rows, err := mysql.Query("SELECT * FROM classes;")
+	rows, err := mysql.Query(query)
 	if err != nil {
 		fmt.Errorf("ERROR: QUERY FAILED")
 		panic(err)
 	}
 
+	var tables string
 	for rows.Next() {
-		var id int
-		var class_name string
-		var student_id int
-		if err := rows.Scan(&id, &class_name, &student_id); err != nil {
+		if err := rows.Scan(&tables); err != nil {
 			panic(err)
 		}
-		fmt.Printf("Class ID: %d, Class Name: %s, Student ID: %d\n", id, class_name, student_id)
+		fmt.Printf("Table: %s", tables)
 	}
 }
